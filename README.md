@@ -4,7 +4,7 @@ This guide assumes create react app has been succesfully done, so follow this gu
 
 We will create a real api with nodejs (written in javascript) and adjust the react (typescript) so it consumes the real api. The tests will mock the real api using the mock service worker (MSW), so regardless of the http library (fetch, axios etc.), the mocks will always do it's thing.
 
-1. yarn add express cors
+1. yarn add express cors 
 2. in the root of the project, create a directory called `real-api`
 3. cd `real-api`
 4. create a `index.js` file with the followin content:
@@ -109,8 +109,9 @@ export default App;
 ```
 
 The application uses the real api now, let's mock it!
+9. yarn add msw --dev
 
-9. Create a folder `utils` and within that create the file `test-utils.tsx` with the following content:
+10. Create a folder `utils` and within that create the file `test-utils.tsx` with the following content:
 ```
 import React, { PropsWithChildren } from "react";
 import { render } from "@testing-library/react";
@@ -119,9 +120,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import type { PreloadedState } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 
-import type { AppStore, RootState } from "../app/store";
+import type { AppStore, RootState } from "../redux/store";
 // As a basic setup, import your same slice reducers
-import userReducer from "../features/users/userSlice";
+import mySlice from "../redux/mySlice";
 
 // This type interface extends the default options for render from RTL, as well
 // as allows the user to specify other things such as initialState, store.
@@ -135,7 +136,7 @@ export function renderWithProviders(
   {
     preloadedState = {},
     // Automatically create a store instance if no store was passed in
-    store = configureStore({ reducer: { user: userReducer }, preloadedState }),
+    store = configureStore({ reducer: { mySlice }, preloadedState }),
     ...renderOptions
   }: ExtendedRenderOptions = {}
 ) {
@@ -146,4 +147,60 @@ export function renderWithProviders(
   // Return an object with the store and all of RTL's query functions
   return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
 }
+```
+
+11. Create a file called `App.test.tsx` with the content:
+```
+import React from "react";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
+import { fireEvent, screen } from "@testing-library/react";
+import { renderWithProviders } from "./utils/test-utils";
+import App from "./App";
+
+export const handlers = [
+  rest.get("http://localhost:4000/api/number/", (req, res, ctx) => {
+    return res(
+      ctx.json({ number: Math.floor(Math.random() * 10) + 1 }),
+      ctx.delay(500)
+    );
+  }),
+];
+
+const server = setupServer(...handlers);
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+
+const isLastNumberInRange = (testString: string) => {
+  const matches = testString.match(/\d+$/); // Find the last sequence of digits at the end of the string
+  if (matches) {
+    const number = parseInt(matches[0]);
+    if (number >= 1 && number <= 10) {
+      return true;
+    }
+  }
+  return false;
+};
+
+test("renders learn react link", async () => {
+  renderWithProviders(<App />);
+  let idleElement = await screen.getByText(/status: idle/i);
+  expect(idleElement).toBeInTheDocument();
+
+  fireEvent.click(
+    screen.getByRole("button", { name: /Give random number from 1 to 10/i })
+  );
+
+  const loadingElement = await screen.findByText(/status: loading/i);
+  expect(loadingElement).toBeInTheDocument();
+
+  idleElement = await screen.findByText(/status: idle/i);
+  expect(idleElement).toBeInTheDocument();
+
+  const counterElement = screen.getByText(/Click me to increment/i);
+  expect(counterElement).toBeInTheDocument();
+  console.log("counterElement.textContent:", counterElement.textContent);
+  expect(isLastNumberInRange(counterElement.textContent ?? "")).toBeTruthy();
+});
 ```
