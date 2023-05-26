@@ -107,3 +107,7 @@ function App() {
 
 export default App;
 ```
+
+The application uses the real api now, let's mock it!
+
+9. ...
