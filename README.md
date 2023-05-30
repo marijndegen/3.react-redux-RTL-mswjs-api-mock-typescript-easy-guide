@@ -108,6 +108,7 @@ export default App;
 ```
 
 The application uses the real api now, let's mock it!
+
 8. yarn add msw --dev
 
 9. Create a folder `utils` and within that create the file `test-utils.tsx` with the following content:
