@@ -7,7 +7,7 @@ We will create a real api with nodejs (written in javascript) and adjust the rea
 1. yarn add express cors 
 2. in the root of the project, create a directory called `real-api`
 3. cd `real-api`
-4. create a `index.js` file with the followin content:
+4. create a `index.js` file with the following content:
 
 ```
 const express = require("express");
@@ -39,8 +39,7 @@ app.listen(port, () => {
 ```
 
 5. Open a new terminal and run the realapi in the background: `node real-api/index.js`
-6. `yarn add msw --dev`
-7. Adjust `redux/mySlice.ts`:
+6. Adjust `redux/mySlice.ts`:
 
 ```
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
@@ -81,7 +80,7 @@ export const { increment } = counterSlice.actions;
 export default counterSlice.reducer;
 ```
 
-8. Adjust `redux/App.tsx`:
+7. Adjust `redux/App.tsx`:
 
 ```
 import { fetchNumber, increment } from "./redux/mySlice";
@@ -109,9 +108,9 @@ export default App;
 ```
 
 The application uses the real api now, let's mock it!
-9. yarn add msw --dev
+8. yarn add msw --dev
 
-10. Create a folder `utils` and within that create the file `test-utils.tsx` with the following content:
+9. Create a folder `utils` and within that create the file `test-utils.tsx` with the following content:
 ```
 import React, { PropsWithChildren } from "react";
 import { render } from "@testing-library/react";
@@ -149,7 +148,7 @@ export function renderWithProviders(
 }
 ```
 
-11. Create a file called `App.test.tsx` with the content:
+10. Create a file called `App.test.tsx` with the content:
 ```
 import React from "react";
 import { rest } from "msw";
