@@ -205,7 +205,7 @@ test("renders learn react link", async () => {
 });
 ```
 
-* Links * 
-https://mswjs.io/
-https://www.robinwieruch.de/react-testing-library/
-https://testing-library.com/docs/react-testing-library/intro/
+**Links** 
+- https://mswjs.io/
+- https://www.robinwieruch.de/react-testing-library/
+- https://testing-library.com/docs/react-testing-library/intro/
