@@ -205,6 +205,8 @@ test("renders learn react link", async () => {
 });
 ```
 
+11. Test it with `yarn test`
+
 **Links** 
 - https://mswjs.io/
 - https://www.robinwieruch.de/react-testing-library/
