@@ -54,7 +54,7 @@ interface CounterState {
   loading: boolean;
 }
 
-const initialState = { value: 0, loading: false };
+const initialState: CounterState = { value: 0, loading: false };
 
 const counterSlice = createSlice({
   name: "counter",
