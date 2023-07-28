@@ -58,7 +58,7 @@ const initialState = { value: 0, loading: false };
 
 const counterSlice = createSlice({
   name: "counter",
-  initialState: initialState as CounterState,
+  initialState, // Delete this comment when tested. This used to be a cast but that is not desired here: initialState: initialState as CounterState,
   reducers: {
     increment: (state: CounterState) => {
       state.value += 1;
